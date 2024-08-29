@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ForestChain</title>
+   
+    
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #reward-button {
+            position: absolute;
+            bottom: 20px; /* Ajuste a distância do fundo conforme necessário */
+            padding: 15px 30px;
+            font-size: 20px;
+            background-color: #333;
+            color: white;
+            border: 2px solid #555;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        #reward-button:hover {
+            background-color: #555;
+            color: #ddd;
+        }
+
+        #reward-button:active {
+            background-color: #777;
+        }
+
+        #mario {
+            position: center;
+            bottom: 80px;
+            left: 20px;
+            width: 380px;
+            height: 460px;
+            background-image: url('gamer.gif'); /* Substitua pelo link da imagem */
+            background-size: cover;
+            background-position: center;
+        }
+
+        #luigi {
+            position: absolute;
+            bottom: 80px;
+            left: 100px;
+            width: 60px;
+            height: 60px;
+            background-image: url('https://example.com/luigi.png'); /* Substitua pelo link da imagem */
+            background-size: cover;
+            background-position: center;
+        }
+
+        #coin {
+            position: absolute;
+            bottom: 30px;
+            left: 180px;
+            width: 40px;
+            height: 40px;
+            background-image: url('https://example.com/coin.png'); /* Substitua pelo link da imagem */
+            background-size: cover;
+            background-position: center;
+        }
+
+        h1, h2 {
+            margin: 10px;
+        }
+    </style>
+   
+</head>
+
+<body>
+    <div id="content">
+        <h1>BALANCE: <span id="saldo">0</span></h1>
+        <h2>TIME <span id="tempo">0:00</span></h2>
+    </div>
+    <button id="reward-button" onclick="recompensa()">PLAY CLAIN</button>
+
+    <!-- Personagens Inspirados no Super Mario -->
+    <div id="mario"></div>
+    <div id="luigi"></div>
+    <div id="coin"></div>
+
+    <script>
+        let saldo = parseInt(localStorage.getItem('saldo')) || 0;
+        let lastRewardTime = localStorage.getItem('lastRewardTime') ? new Date(localStorage.getItem('lastRewardTime')) : null;
+        let rewardCooldown = 5 * 60 * 1000;  // 5 minutos em milissegundos
+
+        document.getElementById('saldo').innerText = saldo;
+
+        function recompensa() {
+            let now = new Date();
+            let diff = lastRewardTime ? now - lastRewardTime : rewardCooldown;
+            let minutesPassed = Math.floor(diff / 60000);
+
+            if (minutesPassed >= 5) {
+                saldo += 100;
+                document.getElementById('saldo').innerText = saldo;
+                lastRewardTime = new Date();
+                localStorage.setItem('saldo', saldo);
+                localStorage.setItem('lastRewardTime', lastRewardTime);
+            } else {
+                alert('Você precisa esperar 5 minutos para obter a próxima recompensa.');
+            }
+        }
+
+        function updateTimer() {
+            let now = new Date();
+            let diff = lastRewardTime ? now - lastRewardTime : rewardCooldown;
+            let secondsRemaining = Math.floor((rewardCooldown - diff) / 1000);
+            if (secondsRemaining < 0) secondsRemaining = 0;
+            let minutes = Math.floor(secondsRemaining / 60);
+            let seconds = secondsRemaining % 60;
+            document.getElementById('tempo').innerText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        }
+
+        setInterval(updateTimer, 1000);
+        updateTimer();
+    </script>
+</body>
+</html>
+
